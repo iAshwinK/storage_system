@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Service
 public class FileStorageImpl implements SecondaryStorage {
@@ -20,8 +21,11 @@ public class FileStorageImpl implements SecondaryStorage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileStorageImpl.class);
 
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+
     @Override
     public List<KeyVal> getAll() {
+        readWriteLock.readLock().lock();
         List<KeyVal> keyValList = new ArrayList<>();
         LOGGER.info("Starting to read all key-values from file");
         try {
@@ -35,13 +39,16 @@ public class FileStorageImpl implements SecondaryStorage {
             fr.close();
         } catch (IOException fileNotFoundException) {
             fileNotFoundException.printStackTrace();
+        }finally {
+            LOGGER.info("Key Val list size:" + keyValList.size());
+            readWriteLock.readLock().unlock();
+            return keyValList;
         }
-        LOGGER.info("Key Val list size:" + keyValList.size());
-        return keyValList;
     }
 
     @Override
     public KeyVal getByKey(String key) {
+        readWriteLock.readLock().lock();
         try {
             ReversedLinesFileReader fileReader = new ReversedLinesFileReader(resource.getFile(), null);
             String str;
@@ -56,6 +63,8 @@ public class FileStorageImpl implements SecondaryStorage {
             fileReader.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            readWriteLock.readLock().unlock();
         }
         LOGGER.info("Key not found");
         return null;
@@ -67,6 +76,7 @@ public class FileStorageImpl implements SecondaryStorage {
 
     @Override
     public void insert(String key, Object value) {
+        readWriteLock.writeLock().lock();
         LOGGER.info("inserting the key:"+key);
         //insert {key} {value} at EOF
         try {
@@ -78,6 +88,8 @@ public class FileStorageImpl implements SecondaryStorage {
             bw.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }finally {
+            readWriteLock.writeLock().unlock();
         }
 
     }

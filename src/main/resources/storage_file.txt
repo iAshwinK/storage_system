@@ -8,3 +8,9 @@ key2 val22
 key1 NULL
 key6 val6
 key7 val7
+key6 value66
+key2 NULL
+key8 value8
+key8 key88
+key8 value88
+key8 NULL
