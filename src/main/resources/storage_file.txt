@@ -6,3 +6,5 @@ key5 val5
 key4 val44
 key2 val22
 key1 NULL
+key6 val6
+key7 val7

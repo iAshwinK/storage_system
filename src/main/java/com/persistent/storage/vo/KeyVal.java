@@ -30,4 +30,12 @@ public class KeyVal implements Serializable {
     public void setValue(Object value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "KeyVal{" +
+                "key='" + key + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

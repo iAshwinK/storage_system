@@ -21,7 +21,7 @@ public class MapServiceImpl implements PrimaryStorage {
     }
 
     public boolean deleteEntry(String key) {
-        if(primaryMap.keyValueMap.contains(key)) {
+        if(primaryMap.keyValueMap.containsKey(key)) {
             primaryMap.keyValueMap.remove(key);
             secondaryStorage.deleteByKey(key);
             return true;
@@ -36,7 +36,7 @@ public class MapServiceImpl implements PrimaryStorage {
     }
 
     public boolean updateEntry(String key,Object value){
-        if(primaryMap.keyValueMap.contains(key)){
+        if(primaryMap.keyValueMap.containsKey(key)){
             primaryMap.keyValueMap.put(key, value);
             secondaryStorage.update(key, value);
             return true;
